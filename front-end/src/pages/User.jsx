@@ -1,43 +1,53 @@
+// pages/User.jsx
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { clearUser } from '../features/user/userSlice'; // Assuming you have a clearUser action
+import { useSelector } from 'react-redux';
 
-const UserPage = () => {
-  const user = useSelector((state) => state.user.user);
-  const dispatch = useDispatch();
-
-  const handleLogout = () => {
-    dispatch(clearUser()); // Clear user data on logout
-    // You might want to redirect to the login page or homepage after logout
-  };
+const User = () => {
+  // Supposons que les données de l'utilisateur contiennent le prénom et le nom de famille
+  const user = useSelector((state) => state.auth.user); // Récupérez les données de l'utilisateur depuis Redux
 
   return (
     <main className="main bg-dark">
       <div className="header">
-        <h1>Welcome back<br />{user?.name || 'User'}!</h1>
+        <h1>
+          Welcome back<br />
+          {user ? `${user.firstName} ${user.lastName}` : 'User'}!
+        </h1>
         <button className="edit-button">Edit Name</button>
       </div>
       <h2 className="sr-only">Accounts</h2>
-      {/* Accounts Section */}
-      {[{ title: 'Argent Bank Checking', amount: '$2,082.79', description: 'Available Balance', id: 'x8349' },
-        { title: 'Argent Bank Savings', amount: '$10,928.42', description: 'Available Balance', id: 'x6712' },
-        { title: 'Argent Bank Credit Card', amount: '$184.30', description: 'Current Balance', id: 'x8349' }].map(account => (
-        <section className="account" key={account.id}>
-          <div className="account-content-wrapper">
-            <h3 className="account-title">{account.title} ({account.id})</h3>
-            <p className="account-amount">{account.amount}</p>
-            <p className="account-amount-description">{account.description}</p>
-          </div>
-          <div className="account-content-wrapper cta">
-            <button className="transaction-button">View transactions</button>
-          </div>
-        </section>
-      ))}
-      <div>
-        <button className="sign-out-button" onClick={handleLogout}>Sign Out</button>
-      </div>
+      <section className="account">
+        <div className="account-content-wrapper">
+          <h3 className="account-title">Argent Bank Checking (x8349)</h3>
+          <p className="account-amount">$2,082.79</p>
+          <p className="account-amount-description">Available Balance</p>
+        </div>
+        <div className="account-content-wrapper cta">
+          <button className="transaction-button">View transactions</button>
+        </div>
+      </section>
+      <section className="account">
+        <div className="account-content-wrapper">
+          <h3 className="account-title">Argent Bank Savings (x6712)</h3>
+          <p className="account-amount">$10,928.42</p>
+          <p className="account-amount-description">Available Balance</p>
+        </div>
+        <div className="account-content-wrapper cta">
+          <button className="transaction-button">View transactions</button>
+        </div>
+      </section>
+      <section className="account">
+        <div className="account-content-wrapper">
+          <h3 className="account-title">Argent Bank Credit Card (x8349)</h3>
+          <p className="account-amount">$184.30</p>
+          <p className="account-amount-description">Current Balance</p>
+        </div>
+        <div className="account-content-wrapper cta">
+          <button className="transaction-button">View transactions</button>
+        </div>
+      </section>
     </main>
   );
 };
 
-export default UserPage;
+export default User;
