@@ -1,17 +1,16 @@
-// components/Header.jsx
 import React from 'react';
+import { Link } from 'react-router-dom'; // Importer Link depuis react-router-dom
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom'; // Importer Link de react-router-dom
-import { logout } from '../features/user/authSlice';
+import { logout } from '../features/user/authSlice'; // Importer l'action logout
 import Logo from '../assets/img/argentBankLogo.png';
 
 const Header = () => {
-  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.profile.user); // Récupérer l'utilisateur depuis profileSlice
+  const token = useSelector((state) => state.auth.token); // Récupérer le token depuis authSlice
 
   const handleLogout = () => {
-    dispatch(logout());
-    localStorage.removeItem('token'); // Supprimer le token du stockage
+    dispatch(logout()); // Appeler l'action de déconnexion
   };
 
   return (
@@ -25,11 +24,11 @@ const Header = () => {
         <h1 className="sr-only">Argent Bank</h1>
       </Link>
       <div>
-        {user ? (
+        {token ? (
           <>
             <Link className="main-nav-item" to="/user">
               <i className="fa fa-user-circle"></i>
-              {user.firstName}
+              {user ? `${user.firstName} ${user.lastName}` : 'User'}
             </Link>
             <Link className="main-nav-item" to="/" onClick={handleLogout}>
               <i className="fa fa-sign-out"></i>
@@ -38,7 +37,7 @@ const Header = () => {
           </>
         ) : (
           <Link className="main-nav-item" to="/sign-in">
-            <i className="fa fa-user-circle"></i>
+            <i className="fa fa-sign-in"></i>
             Sign In
           </Link>
         )}
@@ -48,4 +47,3 @@ const Header = () => {
 };
 
 export default Header;
-
