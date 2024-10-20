@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchUserProfile, updateUserProfile } from '../features/user/profileSlice'; // Importer les actions
+import '../assets/css/UserEditForm.css';
 
 const User = () => {
   const dispatch = useDispatch();
@@ -71,39 +72,48 @@ const User = () => {
       </div>
       
       {isEditing ? (
-        <form onSubmit={handleSubmit} className="edit-form">
-          <div>
-            <label htmlFor="userName">Username:</label>
-            <input
-              type="text"
-              id="userName"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)} // Permettre la modification du nom d'utilisateur
-            />
-          </div>
-          <div>
-            <label htmlFor="firstName">First Name:</label>
-            <input
-              type="text"
-              id="firstName"
-              value={user ? user.firstName : ''}
-              readOnly // Le champ First Name est en lecture seule
-            />
-          </div>
-          <div>
-            <label htmlFor="lastName">Last Name:</label>
-            <input
-              type="text"
-              id="lastName"
-              value={user ? user.lastName : ''}
-              readOnly // Le champ Last Name est en lecture seule
-            />
-          </div>
-          <button type="submit">Save</button>
-          <button type="button" onClick={handleCancel}>Cancel</button>
-          {editError && <div className="error-message">{editError}</div>}
-          {editSuccess && <div className="success-message">{editSuccess}</div>}
-        </form>
+        <form onSubmit={handleSubmit} className="user-edit-form">
+        <div className="form-group">
+          <label htmlFor="userName" className="form-label">Username:</label>
+          <input
+            type="text"
+            id="userName"
+            className="form-input"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)} // Permettre la modification du nom d'utilisateur
+          />
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="firstName" className="form-label">First Name:</label>
+          <input
+            type="text"
+            id="firstName"
+            className="form-input"
+            value={user ? user.firstName : ''}
+            readOnly // Le champ First Name est en lecture seule
+          />
+        </div>
+      
+        <div className="form-group">
+          <label htmlFor="lastName" className="form-label">Last Name:</label>
+          <input
+            type="text"
+            id="lastName"
+            className="form-input"
+            value={user ? user.lastName : ''}
+            readOnly // Le champ Last Name est en lecture seule
+          />
+        </div>
+      
+        <div className="form-buttons">
+          <button type="submit" className="btn-save">Save</button>
+          <button type="button" onClick={handleCancel} className="btn-cancel">Cancel</button>
+        </div>
+      
+        {editError && <div className="error-message">{editError}</div>}
+        {editSuccess && <div className="success-message">{editSuccess}</div>}
+      </form>      
       ) : null} {/* Ne rien afficher si pas en mode édition */}
 
       <h2 className="sr-only">Accounts</h2>
