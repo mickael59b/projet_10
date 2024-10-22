@@ -32,8 +32,11 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (userData, { r
   }
 });
 
+// Récupérer le token depuis localStorage (s'il existe)
+const tokenFromStorage = localStorage.getItem('token');
+
 const initialState = {
-  token: null,
+  token: tokenFromStorage || null, // Initialiser avec le token si présent
   error: null,
 };
 
