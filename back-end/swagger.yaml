@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  description: Bank Argent API documentation
+  description: Documentation de l'API de Bank Argent
   version: 1.0.0
   title: Bank Argent API
 basePath: /api/v1
@@ -9,312 +9,211 @@ schemes:
 paths:
   /user/login:
     post:
-      summary: Login
-      description: API for Login
+      summary: Connexion
+      description: API pour la connexion
       parameters:
         - name: body
           in: body
           required: true
           schema:
-            type: object
-            properties:
-              email:
-                type: string
-              password:
-                type: string
+            $ref: '#/definitions/Login'
       responses:
         '200':
-          description: Login Successfully
+          description: Connexion réussie
           schema:
-            type: object
-            properties:
-              token:
-                type: string
+            $ref: '#/definitions/LoginResponse'
         '400':
-          description: Invalid Fields
+          description: Champs invalides
         '500':
-          description: Internal Server Error
+          description: Erreur interne du serveur
   /user/signup:
     post:
-      summary: Signup
-      description: API for Signup
+      summary: Inscription
+      description: API pour l'inscription
       parameters:
         - name: body
           in: body
           required: true
           schema:
-            type: object
-            properties:
-              email:
-                type: string
-              password:
-                type: string
-              firstName:
-                type: string
-              lastName:
-                type: string
-              userName:
-                type: string
+            $ref: '#/definitions/User'
       responses:
         '200':
-          description: Signup Successfully
+          description: Inscription réussie
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-              message:
-                type: string
-              body:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  email:
-                    type: string
+            $ref: '#/definitions/ApiResponse'
         '400':
-          description: Invalid Fields
+          description: Champs invalides
         '500':
-          description: Internal Server Error
+          description: Erreur interne du serveur
   /user/profile:
     get:
-      summary: User Profile API
-      description: API for fetching a user profile
+      summary: API de Profil Utilisateur
+      description: API pour récupérer le profil d'un utilisateur
       responses:
         '200':
-          description: User profile retrieved successfully
+          description: Profil utilisateur récupéré avec succès
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-              message:
-                type: string
-              body:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  email:
-                    type: string
+            $ref: '#/definitions/ApiResponse'
         '400':
-          description: Invalid Fields
+          description: Champs invalides
         '500':
-          description: Internal Server Error
+          description: Erreur interne du serveur
     put:
-      summary: Update User Profile API
-      description: API for updating a user profile
+      summary: Mise à jour du profil utilisateur
+      description: API pour mettre à jour le profil d'un utilisateur
       parameters:
         - name: body
           in: body
           required: true
           schema:
-            type: object
-            properties:
-              userName:
-                type: string
+            $ref: '#/definitions/UserProfile'
       responses:
         '200':
-          description: User profile updated successfully
+          description: Profil utilisateur mis à jour avec succès
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-              message:
-                type: string
-              body:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  email:
-                    type: string
+            $ref: '#/definitions/ApiResponse'
         '400':
-          description: Invalid Fields
+          description: Champs invalides
         '500':
-          description: Internal Server Error
+          description: Erreur interne du serveur
   /users/{userId}/transactions:
     get:
-      summary: Retrieve User Transactions
-      description: Retrieve all transactions for the current month, grouped by account.
+      summary: Récupérer les transactions d'un utilisateur
+      description: Récupérer toutes les transactions pour le mois en cours, groupées par compte.
       parameters:
         - name: userId
           in: path
           required: true
           type: string
+          description: Identifiant de l'utilisateur.
         - name: Authorization
           in: header
           required: true
           type: string
+          description: Jeton d'authentification JWT.
       responses:
         '200':
-          description: Transactions retrieved successfully
+          description: Transactions récupérées avec succès
           schema:
             type: object
             properties:
-              status:
-                type: integer
-              message:
-                type: string
-              body:
+              accounts:
                 type: array
                 items:
                   type: object
                   properties:
-                    id:
-                      type: string
-                      example: trans_001
-                    amount:
-                      type: number
-                      format: double
-                      example: 150
-                    date:
-                      type: string
-                      format: date
-                      example: '2024-10-05'
                     accountId:
                       type: string
-                      example: acc_001
-                    description:
-                      type: string
-                      example: Achat au magasin
-                    status:
-                      type: string
-                      example: terminé
+                      description: Identifiant du compte.
+                    transactions:
+                      type: array
+                      items:
+                        $ref: '#/definitions/Transaction'
         '400':
-          description: Invalid Parameters
+          description: Paramètres invalides
         '401':
-          description: Unauthorized, invalid token
+          description: Non autorisé, jeton invalide
         '500':
-          description: Internal Server Error
+          description: Erreur interne du serveur
   /users/{userId}/transactions/{transactionId}:
     get:
-      summary: Retrieve Transaction Details
-      description: Retrieve details of a specific transaction.
+      summary: Récupérer les détails d'une transaction
+      description: Récupérer les détails d'une transaction spécifique.
       parameters:
         - name: userId
           in: path
           required: true
           type: string
+          description: Identifiant de l'utilisateur.
         - name: transactionId
           in: path
           required: true
           type: string
+          description: Identifiant de la transaction.
         - name: Authorization
           in: header
           required: true
           type: string
+          description: Jeton d'authentification JWT.
       responses:
         '200':
-          description: Transaction details retrieved successfully
+          description: Détails de la transaction récupérés avec succès
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-              message:
-                type: string
-              body:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: trans_001
-                  amount:
-                    type: number
-                    format: double
-                    example: 150
-                  date:
-                    type: string
-                    format: date
-                    example: '2024-10-05'
-                  accountId:
-                    type: string
-                    example: acc_001
-                  description:
-                    type: string
-                    example: Achat au magasin
-                  status:
-                    type: string
-                    example: terminé
+            $ref: '#/definitions/ApiResponse'
         '404':
-          description: Transaction not found
+          description: Transaction introuvable
         '500':
-          description: Internal Server Error
+          description: Erreur interne du serveur
     put:
-      summary: Update Transaction
-      description: Update an existing transaction without deleting or adding a new one.
+      summary: Mettre à jour une transaction
+      description: Mettre à jour une transaction existante en modifiant uniquement la catégorie et la note.
       parameters:
         - name: userId
           in: path
           required: true
           type: string
+          description: Identifiant de l'utilisateur.
         - name: transactionId
           in: path
           required: true
           type: string
+          description: Identifiant de la transaction.
         - name: Authorization
           in: header
           required: true
           type: string
+          description: Jeton d'authentification JWT.
         - name: body
           in: body
           required: true
           schema:
             type: object
             properties:
-              amount:
-                type: number
-                format: double
-                example: 150
-              description:
+              category:
                 type: string
-                example: Description mise à jour
+                example: "Alimentation"
+              note:
+                type: string
+                example: "Achat au supermarché"
       responses:
         '200':
-          description: Transaction updated successfully
+          description: Transaction mise à jour avec succès
           schema:
-            type: object
-            properties:
-              status:
-                type: integer
-              message:
-                type: string
+            $ref: '#/definitions/ApiResponse'
         '400':
-          description: Invalid input data
+          description: Données d'entrée invalides
         '404':
-          description: Transaction not found
+          description: Transaction introuvable
         '500':
-          description: Internal Server Error
+          description: Erreur interne du serveur
 definitions:
   User:
     type: object
     properties:
       email:
         type: string
-        description: User email
+        description: Email de l'utilisateur
       password:
         type: string
-        description: User password
+        description: Mot de passe de l'utilisateur
       firstName:
         type: string
-        description: User first name
+        description: Prénom de l'utilisateur
       lastName:
         type: string
-        description: User last name
+        description: Nom de famille de l'utilisateur
       userName:
         type: string
-        description: User public name
+        description: Nom public de l'utilisateur
   Login:
     type: object
     properties:
       email:
         type: string
-        description: User email
+        description: Email de l'utilisateur
       password:
         type: string
-        description: User password
+        description: Mot de passe de l'utilisateur
   ApiResponse:
     type: object
     properties:
@@ -334,4 +233,24 @@ definitions:
     properties:
       userName:
         type: string
-        description: User public name
+        description: Nom public de l'utilisateur
+  Transaction:
+    type: object
+    properties:
+      transactionId:
+        type: string
+        description: Identifiant de la transaction
+      amount:
+        type: number
+        format: double
+        description: Montant de la transaction
+      date:
+        type: string
+        format: date
+        description: Date de la transaction
+      category:
+        type: string
+        description: Catégorie de la transaction
+      note:
+        type: string
+        description: Note sur la transaction
