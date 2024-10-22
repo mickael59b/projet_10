@@ -156,3 +156,156 @@ definitions:
     properties:
       userName:
         type: string
+        /users/{userId}/transactions:
+    get:
+      summary: Retrieve User Transactions
+      description: Retrieve all transactions for the current month, grouped by account.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Transactions retrieved successfully
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+              message:
+                type: string
+              body:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: trans_001
+                    amount:
+                      type: number
+                      format: double
+                      example: 150
+                    date:
+                      type: string
+                      format: date
+                      example: '2024-10-05'
+                    accountId:
+                      type: string
+                      example: acc_001
+                    description:
+                      type: string
+                      example: Achat au magasin
+                    status:
+                      type: string
+                      example: terminé
+        '400':
+          description: Invalid Parameters
+        '401':
+          description: Unauthorized, invalid token
+        '500':
+          description: Internal Server Error
+  /users/{userId}/transactions/{transactionId}:
+    get:
+      summary: Retrieve Transaction Details
+      description: Retrieve details of a specific transaction.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+        - name: transactionId
+          in: path
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Transaction details retrieved successfully
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+              message:
+                type: string
+              body:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: trans_001
+                  amount:
+                    type: number
+                    format: double
+                    example: 150
+                  date:
+                    type: string
+                    format: date
+                    example: '2024-10-05'
+                  accountId:
+                    type: string
+                    example: acc_001
+                  description:
+                    type: string
+                    example: Achat au magasin
+                  status:
+                    type: string
+                    example: terminé
+        '404':
+          description: Transaction not found
+        '500':
+          description: Internal Server Error
+    put:
+      summary: Update Transaction
+      description: Update an existing transaction without deleting or adding a new one.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+        - name: transactionId
+          in: path
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              amount:
+                type: number
+                format: double
+                example: 150
+              description:
+                type: string
+                example: Description mise à jour
+      responses:
+        '200':
+          description: Transaction updated successfully
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+              message:
+                type: string
+        '400':
+          description: Invalid input data
+        '404':
+          description: Transaction not found
+        '500':
+          description: Internal Server Error
