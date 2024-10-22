@@ -15,10 +15,42 @@ html {
   
   .main {
     flex: 1;
+    padding: 15px;
   }
   
   .bg-dark {
     background-color: #12002b;
+  }
+
+  .error-message {
+    position: absolute;
+    top: 50px;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+    padding: 1rem 1rem;
+    right: 0;
+    border-top-left-radius: .25rem; /* Arrondi en haut à gauche */
+    border-bottom-left-radius: .25rem; /* Arrondi en bas à gauche */
+    opacity: 1;
+    transition: transform 0.5s ease, opacity 0.5s ease; /* Transition pour l'animation */
+  }
+
+  .success-message{
+    position: absolute;
+    top: 50px;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+    padding: 1rem 1rem;
+    right: 0;
+    border-top-left-radius: .25rem; /* Arrondi en haut à gauche */
+    border-bottom-left-radius: .25rem; /* Arrondi en bas à gauche */
+    opacity: 1;
+    transition: transform 0.5s ease, opacity 0.5s ease; /* Transition pour l'animation */
+  }
+
+  .error-message.hidden {
+    transform: translateX(-100%); /* Déplacer vers la gauche */
+    opacity: 0; /* Rendre transparent */
   }
   
   .sr-only {
@@ -71,7 +103,7 @@ html {
   }
   
   .hero {
-    background-image: url('../img/bank-tree.jpeg');
+    background-image: url('../img/bank-tree.webp');
     background-position: 0 -50px;
     background-size: cover;
     background-repeat: no-repeat;
@@ -170,7 +202,6 @@ html {
     background-color: white;
     width: 300px;
     margin: 0 auto;
-    margin-top: 3rem;
     padding: 2rem;
   }
   

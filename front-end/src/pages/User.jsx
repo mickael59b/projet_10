@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUserProfile, updateUserProfile } from '../features/user/profileSlice'; // Importer les actions
+import { fetchUserProfile, updateUserProfile } from '../features/user/profileSlice';
 import '../assets/css/UserEditForm.css';
 import AccountSection from '../components/AccountSection';
-import accountsData from '../data/accountsData'; // Import des données
+import accountsData from '../data/accountsData';
 
 const User = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.profile.user);
     const loading = useSelector((state) => state.profile.loading);
     const error = useSelector((state) => state.profile.error);
-    const [isEditing, setIsEditing] = useState(false); // État pour le mode édition
-    const [userName, setUserName] = useState(''); // État pour le nom d'utilisateur
+    const [isEditing, setIsEditing] = useState(false);
+    const [userName, setUserName] = useState('');
     const [editError, setEditError] = useState(null);
     const [editSuccess, setEditSuccess] = useState(null);
 
     useEffect(() => {
-        dispatch(fetchUserProfile()); // Récupérer le profil utilisateur lors du chargement du composant
+        dispatch(fetchUserProfile());
     }, [dispatch]);
 
-    // Mettre à jour les champs si l'utilisateur est chargé
     useEffect(() => {
         if (user) {
-            setUserName(user.userName); // Mettre à jour le nom d'utilisateur
+            setUserName(user.userName);
         }
     }, [user]);
 
@@ -36,32 +35,40 @@ const User = () => {
         setEditSuccess(null);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(updateUserProfile({ userName })) // Envoyer uniquement le nom d'utilisateur
-            .then((response) => {
-                if (response.meta.requestStatus === 'fulfilled') {
-                    setEditSuccess('Username updated successfully!');
-                    setIsEditing(false);
-                } else {
-                    setEditError('Failed to update username.');
-                }
-            });
+        try {
+            const response = await dispatch(updateUserProfile({ userName }));
+
+            if (response.meta.requestStatus === 'fulfilled') {
+                setEditSuccess(response.payload.message || 'Profile updated successfully.');
+                setIsEditing(false);
+
+                // Effacer le message de succès après 5 secondes
+                setTimeout(() => {
+                    setEditSuccess(null);
+                }, 5000);
+            } else {
+                setEditError('Failed to update username.');
+            }
+        } catch (err) {
+            setEditError(err.message || 'An unknown error occurred.');
+        }
     };
 
     if (loading) {
-        return <div>Loading...</div>; // Indicateur de chargement
+        return <div>Loading...</div>;
     }
 
     if (error) {
-        return <div className="error-message">{error}</div>; // Afficher un message d'erreur
+        return <div className="error-message">{error}</div>;
     }
 
     return (
         <main className="main bg-dark">
             <div className="header">
                 {isEditing ? (
-                    <h1>Edit User Info</h1> // Affichage du titre en mode édition
+                    <h1>Edit User Info</h1>
                 ) : (
                     <h1>
                         Welcome back<br />
@@ -69,7 +76,7 @@ const User = () => {
                     </h1>
                 )}
                 {!isEditing && (
-                    <button className="edit-button" onClick={handleEdit}>Edit Username</button> // Afficher le bouton seulement quand pas en mode édition
+                    <button className="edit-button" onClick={handleEdit}>Edit Username</button>
                 )}
             </div>
 
@@ -82,7 +89,7 @@ const User = () => {
                             id="userName"
                             className="form-input"
                             value={userName}
-                            onChange={(e) => setUserName(e.target.value)} // Permettre la modification du nom d'utilisateur
+                            onChange={(e) => setUserName(e.target.value)}
                         />
                     </div>
                     
@@ -93,7 +100,7 @@ const User = () => {
                             id="firstName"
                             className="form-input"
                             value={user ? user.firstName : ''}
-                            readOnly // Le champ First Name est en lecture seule
+                            readOnly
                         />
                     </div>
                 
@@ -104,7 +111,7 @@ const User = () => {
                             id="lastName"
                             className="form-input"
                             value={user ? user.lastName : ''}
-                            readOnly // Le champ Last Name est en lecture seule
+                            readOnly
                         />
                     </div>
                 
@@ -112,14 +119,14 @@ const User = () => {
                         <button type="submit" className="btn-save">Save</button>
                         <button type="button" onClick={handleCancel} className="btn-cancel">Cancel</button>
                     </div>
-                
-                    {editError && <div className="error-message">{editError}</div>}
-                    {editSuccess && <div className="success-message">{editSuccess}</div>}
-                </form>      
-            ) : null} {/* Ne rien afficher si pas en mode édition */}
+                </form>
+            ) : null}
+
+            {/* Messages d'erreur et de succès affichés en dehors du formulaire */}
+            {editError && <div className="error-message">{editError}</div>}
+            {editSuccess && <div className="success-message">{editSuccess}</div>}
 
             <h2 className="sr-only">Accounts</h2>
-            {/* Affichage des comptes ici... */}
             {accountsData.map(account => (
                 <AccountSection
                     key={account.id}

@@ -1,7 +1,7 @@
 import React from 'react';
-import Ichat from '../assets/img/icon-chat.png';
-import Imoney from '../assets/img/icon-money.png';
-import Isecu from '../assets/img/icon-security.png';
+import Ichat from '../assets/img/icon-chat.webp';
+import Imoney from '../assets/img/icon-money.webp';
+import Isecu from '../assets/img/icon-security.webp';
 import Banner from '../components/Herobanner';
 import FeatureItem from '../components/FeatureItem';
 

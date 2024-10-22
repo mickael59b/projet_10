@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { loginUser } from '../features/user/authSlice'; // Importer les actions
-import { fetchUserProfile } from '../features/user/profileSlice'; // Importer l'action pour le profil
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../features/user/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
@@ -9,20 +8,26 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const error = useSelector((state) => state.auth.error);
+  const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      setShowError(true);
+      const timer = setTimeout(() => {
+        setShowError(false); // Masquer le message après 10 secondes
+      }, 5000); // 5 secondes
+
+      return () => clearTimeout(timer); // Nettoyer le timer à la désinstallation
+    }
+  }, [error]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // Connexion
-      const loginAction = await dispatch(loginUser({ email, password }));
-      
-      if (loginAction.meta.requestStatus === 'fulfilled') {
-        // Récupérer le profil utilisateur après connexion réussie
-        await dispatch(fetchUserProfile());
-        navigate('/user'); // Rediriger vers la page utilisateur
-      }
-    } catch (error) {
-      console.error('Login error:', error.message);
+    const loginAction = await dispatch(loginUser({ email, password }));
+
+    if (loginAction.meta.requestStatus === 'fulfilled') {
+      navigate('/user'); // Rediriger vers la page utilisateur
     }
   };
 
@@ -31,9 +36,14 @@ const SignIn = () => {
       <section className="sign-in-content">
         <i className="fa fa-user-circle sign-in-icon"></i>
         <h1>Sign In</h1>
+        {showError && (
+          <div className={`error-message ${!showError ? 'hidden' : ''}`}>
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="input-wrapper">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Email</label>
             <input
               type="email"
               placeholder="Email"
