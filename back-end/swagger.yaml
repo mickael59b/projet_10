@@ -334,72 +334,27 @@ definitions:
         type: string
         description: Mot de passe de l'utilisateur
 
-  ApiResponse:
+  LoginResponse:
     type: object
     properties:
-      status:
-        type: integer
-      message:
+      token:
         type: string
-      body:
+        description: Jeton JWT de l'utilisateur après la connexion
+      user:
         type: object
         properties:
           id:
             type: integer
-
-  TransactionListResponse:
-    type: array
-    items:
-      $ref: '#/definitions/Transaction'
-
-  TransactionDetailResponse:
-    properties:
-      id:
-        type: string
-      amount:
-        type: number
-      date:
-        type: string
-      category:
-        type: string
-      description:
-        type: string
-
-  TransactionCreateRequest:
-    properties:
-      amount:
-        type: number
-      date:
-        type: string
-      category:
-        type: string
-      description:
-        type: string
-
-  TransactionUpdateRequest:
-    properties:
-      amount:
-        type: number
-      date:
-        type: string
-      category:
-        type: string
-      description:
-        type: string
-
-  CategoryCreateRequest:
-    properties:
-      name:
-        type: string
-      note:
-        type: string
-
-  CategoryUpdateRequest:
-    properties:
-      name:
-        type: string
-      note:
-        type: string
+            description: Identifiant unique de l'utilisateur
+          firstName:
+            type: string
+            description: Prénom de l'utilisateur
+          lastName:
+            type: string
+            description: Nom de l'utilisateur
+          email:
+            type: string
+            description: Email de l'utilisateur
 
   UserProfile:
     properties:
@@ -407,7 +362,67 @@ definitions:
         type: string
       lastName:
         type: string
-      email:
+
+  ApiResponse:
+    properties:
+      success:
+        type: boolean
+      message:
         type: string
-      userName:
+
+  TransactionListResponse:
+    type: object
+    properties:
+      transactions:
+        type: array
+        items:
+          $ref: '#/definitions/TransactionDetailResponse'
+
+  TransactionDetailResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Identifiant unique de la transaction
+      amount:
+        type: number
+        description: Montant de la transaction
+      description:
+        type: string
+        description: Description de la transaction
+      date:
+        type: string
+        format: date
+        description: Date de la transaction
+
+  TransactionCreateRequest:
+    type: object
+    properties:
+      amount:
+        type: number
+      description:
+        type: string
+
+  TransactionUpdateRequest:
+    type: object
+    properties:
+      amount:
+        type: number
+      description:
+        type: string
+
+  CategoryCreateRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+
+  CategoryUpdateRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
         type: string

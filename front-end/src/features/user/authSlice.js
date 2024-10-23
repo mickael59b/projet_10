@@ -12,19 +12,9 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (userData, { r
     });
 
     if (!response.ok) {
-      // Gérer les erreurs basées sur le code de statut
-      if (response.status === 400) {
-        const errorData = await response.json(); // On suppose que le corps de la réponse contient un message d'erreur
-        return rejectWithValue(errorData.message || 'Mot de passe incorrect. Veuillez vérifier vos informations de connexion.');
-      }
-      if (response.status === 404) {
-        return rejectWithValue('Utilisateur non connu. Veuillez vérifier vos informations de connexion.');
-      }
-      if (response.status === 500) {
-        return rejectWithValue('Erreur interne du serveur. Veuillez réessayer plus tard.');
-      }
-      // Autres erreurs
-      return rejectWithValue('Erreur lors de la connexion. Veuillez réessayer.');
+      const errorData = await response.json();
+      // Retourner directement le message d'erreur depuis le corps de la réponse
+      return rejectWithValue(errorData.message);
     }  
 
     const data = await response.json();
