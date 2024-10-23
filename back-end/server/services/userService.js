@@ -51,13 +51,13 @@ module.exports.loginUser = async serviceData => {
     const user = await User.findOne({ email: serviceData.email })
 
     if (!user) {
-      throw new Error('User not found!')
+      throw new Error('Utilisateur non connu. Veuillez vérifier vos informations de connexion.')
     }
 
     const isValid = await bcrypt.compare(serviceData.password, user.password)
 
     if (!isValid) {
-      throw new Error('Password is invalid')
+      throw new Error('Mot de passe incorrect. Veuillez vérifier vos informations de connexion.')
     }
 
     const token = jwt.sign(

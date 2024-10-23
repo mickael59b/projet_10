@@ -41,7 +41,7 @@ const User = () => {
             const response = await dispatch(updateUserProfile({ userName }));
 
             if (response.meta.requestStatus === 'fulfilled') {
-                setEditSuccess(response.payload.message || 'Profile updated successfully.');
+                setEditSuccess(response.payload.message || 'Pseudo mis à jour avec succès.');
                 setIsEditing(false);
 
                 // Effacer le message de succès après 5 secondes
