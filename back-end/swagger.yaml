@@ -107,6 +107,8 @@ paths:
 
   /users/{userId}/transactions:
     get:
+      tags:
+        - Module Transactions
       summary: Récupérer toutes les transactions
       description: Récupère toutes les transactions pour l'utilisateur spécifié.
       parameters:
@@ -126,7 +128,23 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Transaction'
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: ID unique de la transaction
+                date:
+                  type: string
+                  format: date-time
+                  description: Date de la transaction
+                amount:
+                  type: number
+                  format: float
+                  description: Montant de la transaction
+                balance:
+                  type: number
+                  format: float
+                  description: Solde après la transaction
         '400':
           description: Paramètres invalides
         '401':
@@ -136,7 +154,9 @@ paths:
 
   /users/{userId}/transactions/{transactionId}:
     get:
-      summary: Récupérer les détails d'une transaction
+      tags:
+        - Module Transactions
+      summary: Récupérer une seule transaction
       description: Récupère les détails d'une transaction spécifique.
       parameters:
         - name: userId
@@ -157,45 +177,44 @@ paths:
         '200':
           description: Détails de la transaction récupérés avec succès
           schema:
-            $ref: '#/definitions/TransactionDetailResponse'
+            type: object
+            properties:
+              id:
+                type: integer
+                description: ID unique de la transaction
+              date:
+                type: string
+                format: date-time
+                description: Date de la transaction
+              amount:
+                type: number
+                format: float
+                description: Montant de la transaction
+              balance:
+                type: number
+                format: float
+                description: Solde après la transaction
+              transactionType:
+                type: string
+                description: Type de la transaction
+              category:
+                type: string
+                example: "Default"
+                description: Catégorie de la transaction
+              note:
+                type: string
+                example: "Default"
+                description: Note associée à la transaction
         '404':
           description: Transaction non trouvée
         '500':
           description: Erreur interne du serveur
 
-    post:
-      summary: Créer une transaction
-      description: Crée une nouvelle transaction pour l'utilisateur spécifié.
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          type: string
-        - name: Authorization
-          in: header
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: Charge utile de création de transaction.
-          required: true
-          schema:
-            $ref: '#/definitions/TransactionCreateRequest'
-      security:
-        - Bearer: []
-      responses:
-        '201':
-          description: Transaction créée avec succès
-          schema:
-            $ref: '#/definitions/TransactionDetailResponse'
-        '400':
-          description: Données invalides
-        '500':
-          description: Erreur interne du serveur
-
     put:
+      tags:
+        - Module Transactions
       summary: Modifier une transaction
-      description: Modifie une transaction existante.
+      description: Modifie la catégorie et la note d'une transaction existante.
       parameters:
         - name: userId
           in: path
@@ -211,107 +230,33 @@ paths:
           type: string
         - in: body
           name: body
-          description: Charge utile de mise à jour de transaction.
+          description: Charge utile de mise à jour de la transaction.
           required: true
           schema:
-            $ref: '#/definitions/TransactionUpdateRequest'
+            type: object
+            properties:
+              category:
+                type: string
+                description: Nouvelle catégorie de la transaction
+              note:
+                type: string
+                description: Nouvelle note de la transaction
       security:
         - Bearer: []
       responses:
         '200':
           description: Transaction mise à jour avec succès
           schema:
-            $ref: '#/definitions/TransactionDetailResponse'
+            type: object
+            properties:
+              category:
+                type: string
+              note:
+                type: string
         '400':
           description: Données invalides
         '404':
           description: Transaction non trouvée
-        '500':
-          description: Erreur interne du serveur
-
-    delete:
-      summary: Supprimer une transaction
-      description: Supprime une transaction existante.
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          type: string
-        - name: transactionId
-          in: path
-          required: true
-          type: string
-        - name: Authorization
-          in: header
-          required: true
-          type: string
-      security:
-        - Bearer: []
-      responses:
-        '204':
-          description: Transaction supprimée avec succès
-        '404':
-          description: Transaction non trouvée
-        '500':
-          description: Erreur interne du serveur
-
-  /categories:
-    post:
-      summary: Créer une catégorie
-      description: Crée une nouvelle catégorie et une note associée.
-      parameters:
-        - in: body
-          name: body
-          description: Charge utile de création de catégorie.
-          required: true
-          schema:
-            $ref: '#/definitions/CategoryCreateRequest'
-      responses:
-        '201':
-          description: Catégorie créée avec succès
-        '400':
-          description: Données invalides
-        '500':
-          description: Erreur interne du serveur
-
-  /categories/{categoryId}:
-    put:
-      summary: Modifier une catégorie
-      description: Modifie une catégorie existante et une note associée.
-      parameters:
-        - name: categoryId
-          in: path
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: Charge utile de mise à jour de catégorie.
-          required: true
-          schema:
-            $ref: '#/definitions/CategoryUpdateRequest'
-      responses:
-        '200':
-          description: Catégorie mise à jour avec succès
-        '400':
-          description: Données invalides
-        '404':
-          description: Catégorie non trouvée
-        '500':
-          description: Erreur interne du serveur
-
-    delete:
-      summary: Supprimer une catégorie
-      description: Supprime une catégorie existante.
-      parameters:
-        - name: categoryId
-          in: path
-          required: true
-          type: string
-      responses:
-        '204':
-          description: Catégorie supprimée avec succès
-        '404':
-          description: Catégorie non trouvée
         '500':
           description: Erreur interne du serveur
 
@@ -375,71 +320,3 @@ definitions:
       data:
         type: object
 
-  Transaction:
-    type: object
-    properties:
-      id:
-        type: string
-        description: ID de la transaction
-      userId:
-        type: string
-        description: ID de l'utilisateur
-      amount:
-        type: number
-        format: float
-        description: Montant de la transaction
-      date:
-        type: string
-        format: date-time
-        description: Date de la transaction
-      description:
-        type: string
-        description: Description de la transaction
-
-  TransactionDetailResponse:
-    type: object
-    properties:
-      transaction:
-        $ref: '#/definitions/Transaction'
-
-  TransactionCreateRequest:
-    type: object
-    properties:
-      amount:
-        type: number
-        format: float
-        description: Montant de la transaction
-      description:
-        type: string
-        description: Description de la transaction
-
-  TransactionUpdateRequest:
-    type: object
-    properties:
-      amount:
-        type: number
-        format: float
-        description: Montant de la transaction
-      description:
-        type: string
-        description: Description de la transaction
-
-  CategoryCreateRequest:
-    type: object
-    properties:
-      name:
-        type: string
-        description: Nom de la catégorie
-      description:
-        type: string
-        description: Description de la catégorie
-
-  CategoryUpdateRequest:
-    type: object
-    properties:
-      name:
-        type: string
-        description: Nom de la catégorie
-      description:
-        type: string
-        description: Description de la catégorie
