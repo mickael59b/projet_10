@@ -118,11 +118,15 @@ paths:
           in: header
           required: true
           type: string
+      security:
+        - Bearer: []
       responses:
         '200':
           description: Transactions récupérées avec succès
           schema:
-            $ref: '#/definitions/TransactionListResponse'
+            type: array
+            items:
+              $ref: '#/definitions/Transaction'
         '400':
           description: Paramètres invalides
         '401':
@@ -147,6 +151,8 @@ paths:
           in: header
           required: true
           type: string
+      security:
+        - Bearer: []
       responses:
         '200':
           description: Détails de la transaction récupérés avec succès
@@ -175,6 +181,8 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/TransactionCreateRequest'
+      security:
+        - Bearer: []
       responses:
         '201':
           description: Transaction créée avec succès
@@ -207,6 +215,8 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/TransactionUpdateRequest'
+      security:
+        - Bearer: []
       responses:
         '200':
           description: Transaction mise à jour avec succès
@@ -235,6 +245,8 @@ paths:
           in: header
           required: true
           type: string
+      security:
+        - Bearer: []
       responses:
         '204':
           description: Transaction supprimée avec succès
@@ -338,30 +350,96 @@ definitions:
         description: Mot de passe de l'utilisateur
 
   LoginResponse:
-    type: object
     properties:
       token:
         type: string
-        description: Jeton JWT de l'utilisateur après la connexion
-      user:
-        type: object
-        properties:
-          id:
-            type: integer
-            description: Identifiant unique de l'utilisateur
-          email:
-            type: string
-            description: Email de l'utilisateur
-          firstName:
-            type: string
-            description: Prénom de l'utilisateur
-          lastName:
-            type: string
-            description: Nom de famille de l'utilisateur
+        description: Token JWT pour l'authentification
 
   UserProfile:
     properties:
       firstName:
         type: string
-        description: Prénom de l'utilisateur
-     
+      lastName:
+        type: string
+      email:
+        type: string
+      userName:
+        type: string
+
+  ApiResponse:
+    type: object
+    properties:
+      message:
+        type: string
+        description: Message retourné par l'API
+      data:
+        type: object
+
+  Transaction:
+    type: object
+    properties:
+      id:
+        type: string
+        description: ID de la transaction
+      userId:
+        type: string
+        description: ID de l'utilisateur
+      amount:
+        type: number
+        format: float
+        description: Montant de la transaction
+      date:
+        type: string
+        format: date-time
+        description: Date de la transaction
+      description:
+        type: string
+        description: Description de la transaction
+
+  TransactionDetailResponse:
+    type: object
+    properties:
+      transaction:
+        $ref: '#/definitions/Transaction'
+
+  TransactionCreateRequest:
+    type: object
+    properties:
+      amount:
+        type: number
+        format: float
+        description: Montant de la transaction
+      description:
+        type: string
+        description: Description de la transaction
+
+  TransactionUpdateRequest:
+    type: object
+    properties:
+      amount:
+        type: number
+        format: float
+        description: Montant de la transaction
+      description:
+        type: string
+        description: Description de la transaction
+
+  CategoryCreateRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Nom de la catégorie
+      description:
+        type: string
+        description: Description de la catégorie
+
+  CategoryUpdateRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Nom de la catégorie
+      description:
+        type: string
+        description: Description de la catégorie
