@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'; // Importer Link depuis react-router-do
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../features/user/authSlice'; // Importer l'action logout
 import { fetchUserProfile } from '../features/user/profileSlice'; // Importer l'action pour récupérer le profil utilisateur
-import Logo from '../assets/img/argentBankLogo.webp';
+import Logo from '../assets/img/argentbanklogo.webp';
 
 const Header = () => {
   const dispatch = useDispatch();
