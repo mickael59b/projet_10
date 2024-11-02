@@ -1,44 +1,31 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios'; // Importer Axios
 
 // Action pour récupérer le profil utilisateur
 export const fetchUserProfile = createAsyncThunk('profile/fetchUserProfile', async () => {
     const token = localStorage.getItem('token');
 
-    const response = await fetch('http://localhost:3001/api/v1/user/profile', {
+    const response = await axios.get('http://localhost:3001/api/v1/user/profile', {
         headers: {
             'Authorization': `Bearer ${token}`,
         },
     });
 
-    if (!response.ok) {
-        throw new Error('Failed to fetch user profile');
-    }
-
-    const data = await response.json();
-    return data.body; // Retourner les données du profil utilisateur
+    return response.data.body; // Retourner les données du profil utilisateur
 });
 
 // Action pour mettre à jour le profil utilisateur
 export const updateUserProfile = createAsyncThunk('profile/updateUserProfile', async (userData) => {
     const token = localStorage.getItem('token');
 
-    const response = await fetch('http://localhost:3001/api/v1/user/profile', {
-        method: 'PUT',
+    const response = await axios.put('http://localhost:3001/api/v1/user/profile', userData, {
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData),
     });
 
-    if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData?.message || 'Erreur lors de la mise à jour du profil utilisateur';
-        throw new Error(errorMessage);
-    }
-
-    const data = await response.json();
-    return data.body; // Assurez-vous que le body contient les informations nécessaires
+    return response.data.body; // Retourner les données mises à jour
 });
 
 // État initial
@@ -91,4 +78,3 @@ export const { clearProfile } = profileSlice.actions;
 
 // Exporter le reducer
 export default profileSlice.reducer;
-

@@ -1,27 +1,26 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios'; // Importer Axios
 
 // Action asynchrone pour la connexion
 export const loginUser = createAsyncThunk('auth/loginUser', async (userData, { rejectWithValue }) => {
   try {
-    const response = await fetch('http://localhost:3001/api/v1/user/login', {
-      method: 'POST',
+    const response = await axios.post('http://localhost:3001/api/v1/user/login', userData, {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(userData),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      // Retourner directement le message d'erreur depuis le corps de la réponse
-      return rejectWithValue(errorData.message);
-    }  
-
-    const data = await response.json();
-    localStorage.setItem('token', data.body.token); // Stocker le token
-    return { token: data.body.token, user: data.body.user }; // Retourner le token et les informations de l'utilisateur
+    // Axios gère les erreurs HTTP, donc on vérifie si la réponse est réussie
+    const { token, user } = response.data.body; // Déstructurer le token et l'utilisateur
+    localStorage.setItem('token', token); // Stocker le token
+    return { token, user }; // Retourner le token et les informations de l'utilisateur
   } catch (error) {
-    // Gestion des erreurs inattendues
+    // Gestion des erreurs
+    if (error.response) {
+      // Le serveur a répondu avec un statut qui indique une erreur
+      return rejectWithValue(error.response.data.message);
+    }
+    // Autres erreurs (problèmes de connexion, etc.)
     return rejectWithValue('Une erreur inattendue est survenue. Veuillez vérifier votre connexion.');
   }
 });
