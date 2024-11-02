@@ -214,7 +214,7 @@ paths:
       tags:
         - Module Transactions
       summary: Modifier une transaction
-      description: Modifie la catégorie et la note d'une transaction existante.
+      description: Modifie la catégorie et/ou la note d'une transaction existante.
       parameters:
         - name: userId
           in: path
@@ -233,14 +233,7 @@ paths:
           description: Charge utile de mise à jour de la transaction.
           required: true
           schema:
-            type: object
-            properties:
-              category:
-                type: string
-                description: Nouvelle catégorie de la transaction
-              note:
-                type: string
-                description: Nouvelle note de la transaction
+            $ref: '#/definitions/UpdateTransaction'
       security:
         - Bearer: []
       responses:
@@ -251,8 +244,10 @@ paths:
             properties:
               category:
                 type: string
+                description: Catégorie mise à jour
               note:
                 type: string
+                description: Note mise à jour
         '400':
           description: Données invalides
         '404':
@@ -320,3 +315,12 @@ definitions:
       data:
         type: object
 
+  UpdateTransaction:
+    type: object
+    properties:
+      category:
+        type: string
+        description: Nouvelle catégorie de la transaction (optionnelle)
+      note:
+        type: string
+        description: Nouvelle note de la transaction (optionnelle)
